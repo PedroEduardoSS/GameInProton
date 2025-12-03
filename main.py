@@ -1,24 +1,19 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
-from bs4 import BeautifulSoup
+from nicegui import ui
+from scraping.scrap import search_games
 
-import time
+with ui.column().classes("w-full"):
+    game_name = ui.input(label='Game name', placeholder='start typing')
+    result_list = ui.list().classes("w-full")
 
-service = Service(ChromeDriverManager().install())
-print(service)
-driver = webdriver.Chrome(service=service)
+    def update_list():
+        results = search_games(game_name.value)
+        result_list.clear()
+        ui.notify("Loading")
+        with result_list:
+            for name, link in results:
+                with ui.row():
+                    ui.link(f"{name}", link)
 
-driver.get("https://www.protondb.com/search?q=rdr2")
+    ui.button("Search", on_click=update_list)
 
-#results = driver.find_elements(by=By.TAG_NAME, value="a")
-time.sleep(3)
-html = driver.page_source
-soup = BeautifulSoup(html, "html.parser")
-div = soup.find("div", class_="styled__Flex-sc-g24nyo-0 styled__Row-sc-g24nyo-4 GameLayout__GenericContainer-sc-bqe883-0 GameLayout__MobileUpContainer-sc-bqe883-1 gMlTmq dKXMgt yIWdu iTMDdw")
-a_elements = div.find_all("a")
-
-print(a_elements)
-time.sleep(6)
-driver.quit()
+ui.run()
