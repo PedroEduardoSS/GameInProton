@@ -1,3 +1,5 @@
+import os
+from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
@@ -7,6 +9,8 @@ from bs4 import BeautifulSoup
 import time
 from typing import Tuple
 from nicegui import ui
+
+load_dotenv()
 
 def search_games(game: str) -> Tuple:
     service = Service(ChromeDriverManager().install())
