@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 import time
 from typing import Tuple
 from nicegui import ui
+from google import genai
 
 load_dotenv()
 
@@ -35,3 +36,11 @@ def search_games(game: str) -> Tuple:
     time.sleep(3)
     driver.quit()
     return game_list
+
+def game_report():
+    client = genai.Client()
+
+    response = client.models.generate_content(
+        model="gemini-2.5-flash", contents="Explain how AI works in a few words"
+    )
+    print(response.text)
